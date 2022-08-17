@@ -16,32 +16,44 @@ input.addEventListener("change", function () {
         var i = 0;
         var headers = [];
         var json_object = [];
-        console.log("data :>> ", data);
         data.map((row, index) => {
             if (i === 0) {
                 headers = row;
             }
             if (i > 0) {
                 var temp = {};
-                var bulkDutyDetail = [];
-                const rowObjectValue = row.slice(0, 3);
                 const rowArrayValue = row.slice(3, 60);
-                console.log("headers :>> ", headers);
-                console.log("row :>> ", row);
 
-                for (let x = 0; x < row.length; x++) {
-                    temp[headers[x]] = row[x];
+                for (let j = 0; j < row.length; j++) {
+                    temp[headers[j]] = row[j];
                     // insert data into formatted json data set
                     jsonFormattedData.EmployeeID = temp.EmployeeID;
                     jsonFormattedData.NameOfEmployee = temp.NameOfEmployee;
                     jsonFormattedData.OfficeID = temp.OfficeID;
 
-                    // bulkDutyDetail.DayNumber = x;
-                    // bulkDutyDetail.ShiftName = "fayez"
-                    // temp.DayNumber = headers[x]
-                    // bulkDutyDetail.propertyName = "ShiftName"
+                    const newValue = Object.keys(temp).reduce(function (obj, key) {
+                        if (key != "EmployeeID" && key != "NameOfEmployee" && key != "OfficeID") {           //key you want to remove
+                            obj[key] = temp[key];
+                        }
+                        return obj;
+                    }, {});
 
-                    // bulkDutyDetail.ShiftName = row[x
+                }
+
+                console.log('temp :>> ', temp);
+
+
+
+                var details = {
+                    ShiftName: '',
+                    DayNumber: '',
+                }
+                for (let index = 0; index < newValue.length; index++) {
+                    const element = newValue[index];
+                    console.log('element :>> ', element);
+                    details.ShiftName = element;
+                    jsonFormattedData.bulkDutyDetail.push(details);
+
                 }
 
                 // find data from header row
@@ -49,15 +61,11 @@ input.addEventListener("change", function () {
                 //     const xyz = headers[x];
                 //     console.log('xyz value is :>> ', xyz);
                 // }
-                console.log("jsonFormattedData :>> ", jsonFormattedData);
                 json_object.push(temp);
             }
             i++;
         });
-        document.getElementById("json-data").value = JSON.stringify(
-            json_object,
-            null,
-            4
-        );
+
+        document.getElementById("json-data").value = JSON.stringify(json_object, null, 4);
     });
 });
